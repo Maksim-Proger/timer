@@ -8,86 +8,10 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/nameApp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="55dp"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainer"
+        android:name="project.gb.timer.TimerFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/string_name"
-        android:textStyle="bold"
-        android:textSize="35sp" />
-
-    <TextView
-        android:id="@+id/textViewTimer"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:gravity="center"
-        android:background="@drawable/rounded_corners_for_textview"
-        android:textStyle="bold"
-        android:textSize="75sp"/>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        app:layout_constraintBottom_toTopOf="@id/frameLayout"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:layout_marginHorizontal="35dp"
-        android:max="100"
-        android:progress="0"
-        style="?android:attr/progressBarStyleHorizontal" />
-
-    <SeekBar
-        android:id="@+id/seekBar"
-        app:layout_constraintTop_toTopOf="@id/progressBar"
-        app:layout_constraintBottom_toBottomOf="@id/progressBar"
-        app:layout_constraintStart_toStartOf="@id/progressBar"
-        app:layout_constraintEnd_toEndOf="@id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:max="100"
-        android:progress="0" />
-
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginBottom="25dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonStart"
-            android:layout_width="270dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_corners_for_button"
-            android:text="@string/button_start"
-            android:textColor="@color/blue"
-            android:textSize="20sp"/>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonStop"
-            android:layout_width="270dp"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="100dp"
-            android:background="@drawable/rounded_corners_for_button"
-            android:text="@string/button_stop"
-            android:textColor="@color/blue"
-            android:textSize="20sp"
-            android:visibility="gone"/>
-
-    </FrameLayout>
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
