@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import project.gb.timer.databinding.FragmentTimerBinding
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 
 class TimerFragment : Fragment() {
@@ -31,7 +33,6 @@ class TimerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO надо разобраться как меняется цвет у SeekBar и ProgressBar
         // Привязываем SeekBar к ProgressBar
         binding.progressBar.max = 100
         binding.seekBar.max = 100
@@ -39,38 +40,37 @@ class TimerFragment : Fragment() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 binding.progressBar.progress = progress
                 binding.textViewTimer.text = progress.toString()
-
                 // Записываем значение
                 timerValue = progress
 
+                binding.indicatorTimer.max = progress
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {
                 // TODO доработать
             }
-
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 // TODO доработать
             }
+
         })
 
         buttonsListener()
-
     }
 
     /**
      * Запускаем таймер
      */
     private fun startTimer(){
-        val myRunnable = object : Runnable {
+        timerRunnable  = object : Runnable {
             override fun run() {
                 binding.textViewTimer.text = timerValue.toString()
+                val progressPercentage = (timerValue * 100 / binding.seekBar.max)
+                binding.indicatorTimer.progress = progressPercentage
                 timerValue--
-                if (timerValue >= 0) {
-                    handler.postDelayed(this, 1000)
-                }
+                handler.postDelayed(this, 1000)
             }
         }
-        handler.post(myRunnable)
+        handler.post(timerRunnable!!)
     }
 
     /**
@@ -80,6 +80,7 @@ class TimerFragment : Fragment() {
         timerRunnable?.let { handler.removeCallbacks(it) }
         timerValue = 0
         binding.textViewTimer.text = timerValue.toString()
+        binding.progressBar.progress = 0
     }
 
     private fun buttonsListener() {
