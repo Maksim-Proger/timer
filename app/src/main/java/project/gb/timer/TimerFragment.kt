@@ -27,6 +27,7 @@ class TimerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Настройка слушателя изменений в SeekBar
         binding.progressBar.max = 100
         binding.seekBar.max = 100
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -41,24 +42,39 @@ class TimerFragment : Fragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
+        // Настройка слушателей для кнопок
         binding.buttonStart.setOnClickListener {
-            binding.buttonStop.visibility = View.VISIBLE
-            binding.buttonStart.visibility = View.INVISIBLE
             viewModel.startTimer()
         }
 
         binding.buttonStop.setOnClickListener {
-            binding.buttonStart.visibility = View.VISIBLE
-            binding.buttonStop.visibility = View.INVISIBLE
             viewModel.stopTimer()
         }
 
+        // Наблюдение за LiveData для таймера
         viewModel.timer.observe(viewLifecycleOwner, Observer { time ->
             binding.textViewTimer.text = time.toString()
             val progressPercentage = (time * 100 / binding.seekBar.max)
             binding.progressBar.progress = progressPercentage
             binding.indicatorTimer.progress = progressPercentage
         })
+
+        // Наблюдение за LiveData для видимости кнопок
+        viewModel.startButtonVisible.observe(viewLifecycleOwner, Observer { visible ->
+            binding.buttonStart.visibility = if (visible) View.VISIBLE else View.INVISIBLE
+        })
+
+        viewModel.stopButtonVisible.observe(viewLifecycleOwner, Observer { visible ->
+            binding.buttonStop.visibility = if (visible) View.VISIBLE else View.INVISIBLE
+        })
+
+        // Восстановление состояния кнопок при повороте экрана
+        if (savedInstanceState != null) {
+            val startButtonVisible = savedInstanceState.getBoolean("start_button_visible", true)
+            val stopButtonVisible = savedInstanceState.getBoolean("stop_button_visible", false)
+            viewModel.updateStartButtonVisibility(startButtonVisible)
+            viewModel.updateStopButtonVisibility(stopButtonVisible)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -66,12 +82,26 @@ class TimerFragment : Fragment() {
         viewModel.timer.value?.let {
             outState.putInt("timer_value", it)
         }
+        outState.putBoolean("start_button_visible", binding.buttonStart.visibility == View.VISIBLE)
+        outState.putBoolean("stop_button_visible", binding.buttonStop.visibility == View.VISIBLE)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        savedInstanceState?.getInt("timer_value")?.let {
-            viewModel.updateTimer(it)
+        savedInstanceState?.let { bundle ->
+            if (bundle.getBoolean("start_button_visible", true)) {
+                viewModel.updateStartButtonVisibility(true)
+            } else {
+                viewModel.updateStartButtonVisibility(false)
+            }
+            if (bundle.getBoolean("stop_button_visible", false)) {
+                viewModel.updateStopButtonVisibility(true)
+            } else {
+                viewModel.updateStopButtonVisibility(false)
+            }
+            savedInstanceState.getInt("timer_value")?.let {
+                viewModel.updateTimer(it)
+            }
         }
     }
 
@@ -80,5 +110,3 @@ class TimerFragment : Fragment() {
         _binding = null
     }
 }
-
-
