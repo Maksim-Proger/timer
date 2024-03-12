@@ -32,8 +32,9 @@ class TimerFragment : Fragment() {
         binding.seekBar.max = 100
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                binding.progressBar.progress = progress
+                binding.indicatorTimer.max = progress
                 binding.indicatorTimer.progress = progress
+
                 binding.textViewTimer.text = progress.toString()
                 viewModel.updateTimer(progress)
             }
@@ -55,7 +56,6 @@ class TimerFragment : Fragment() {
         viewModel.timer.observe(viewLifecycleOwner, Observer { time ->
             binding.textViewTimer.text = time.toString()
             val progressPercentage = (time * 100 / binding.seekBar.max)
-            binding.progressBar.progress = progressPercentage
             binding.indicatorTimer.progress = progressPercentage
         })
 
